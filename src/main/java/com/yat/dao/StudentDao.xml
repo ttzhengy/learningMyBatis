@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yat.dao.StudentDao">
+
+    <select id="selectStudents" resultType="com.yat.entity.Student">
+       select id,name,email,age from student order by id
+    </select>
+
+    <select id="selectStudentByID" parameterType="java.lang.Integer" resultType="com.yat.entity.Student">
+        select id,name,email,age from student where id=#{id}
+    </select>
+
+    <select id="selectMulitParam" resultType="com.yat.entity.Student">
+        select id,name,email,age from student where name=#{name} or age=#{age}
+    </select>
+
+    <select id="selectStudentByMap" resultType="com.yat.entity.Student">
+        select id,name,email,age from student where name=#{name} or age=#{age}
+    </select>
+
+    <select id="selectUser$Order" resultType="com.yat.entity.Student">
+        select id,name,email,age from student order by ${colName}
+    </select>
+
+    <resultMap id="studentMap" type="com.yat.entity.Student">
+        <!--列名与java属性的关系
+            主键列使用<id>标签
+                column：列名
+                property：java类型的属性名
+        -->
+        <id column="id" property="id"/>
+        <!--非主键列，使用result-->
+        <result column="name" property="name"/>
+        <result column="email" property="email"/>
+        <result column="age" property="age"/>
+    </resultMap>
+    <select id="selectAllStudents" resultMap="studentMap">
+        select id,name,email,age from student
+    </select>
+
+    <insert id="insertStudent">
+        insert into student values (#{id},#{name},#{email},#{age})
+    </insert>
+
+    <select id="selectLikeOne" resultType="com.yat.entity.Student">
+        select id,name,email,age from student where name like #{name}
+    </select>
+
+    <select id="selectLikeTwo" resultType="com.yat.entity.Student">
+        select id,name,email,age from student where name like "%" #{name} "%"
+    </select>
+</mapper>
