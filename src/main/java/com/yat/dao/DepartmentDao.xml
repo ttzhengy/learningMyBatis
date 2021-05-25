@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yat.dao.DepartmentDao">
+
+    <select id="getDeptById" resultType="com.yat.entity.Department">
+       select id, dept_name departmentName from department where id=#{id}
+    </select>
+
+    <resultMap id="MyDept" type="com.yat.entity.Department">
+        <id column="did" property="id"/>
+        <result column="departmentName" property="departmentName"/>
+        <collection property="stus" ofType="com.yat.entity.Student">
+            <id column="sid" property="id"/>
+            <result column="sname" property="name"/>
+            <result column="email" property="email"/>
+            <result column="age" property="age"/>
+        </collection>
+    </resultMap>
+    <select id="getDeptByIdPlus" resultMap="MyDept">
+        select d.id as did, d.dept_name as departmentName, s.id as sid,
+               s.name as sname, s.email as email, s.age as age
+        from department as d
+        left join student as s on d.id=s.d_id
+        where d.id=#{id}
+    </select>
+
+    <resultMap id="DeptStep" type="com.yat.entity.Department">
+        <id column="id" property="id"/>
+        <result column="departmentName" property="departmentName"/>
+        <collection property="stus" select="com.yat.dao.StudentDao.getStuByDeptId"
+                    column="id"></collection>
+    </resultMap>
+    <select id="getDeptByIdStep" resultMap="DeptStep">
+        select id,dept_name as departmentName from department where id=#{id}
+    </select>
+</mapper>

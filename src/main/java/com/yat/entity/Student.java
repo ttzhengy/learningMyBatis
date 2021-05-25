@@ -1,12 +1,34 @@
 package com.yat.entity;
 
 
-public class Student {
+import java.io.Serializable;
+
+public class Student implements Serializable {
 
     private Integer id;
     private String name;
     private String email;
     private Integer age;
+    private Department department;
+
+    public Student() {
+    }
+
+    public Student(Integer id, String name, String email, Integer age, Department department) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.age = age;
+        this.department = department;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
 
     @Override
     public String toString() {
@@ -15,6 +37,7 @@ public class Student {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", age=" + age +
+                ", department=" + department +
                 '}';
     }
 

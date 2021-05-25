@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.yat.dao.StudentDao">
+    <cache></cache>
 
     <select id="selectStudents" resultType="com.yat.entity.Student">
        select id,name,email,age from student order by id
@@ -40,8 +41,9 @@
         select id,name,email,age from student
     </select>
 
-    <insert id="insertStudent">
-        insert into student values (#{id},#{name},#{email},#{age})
+    <insert id="insertStudent" useGeneratedKeys="true" keyProperty="id">
+        insert into student(name, email, age)
+        values (#{name},#{email},#{age})
     </insert>
 
     <select id="selectLikeOne" resultType="com.yat.entity.Student">
@@ -50,5 +52,49 @@
 
     <select id="selectLikeTwo" resultType="com.yat.entity.Student">
         select id,name,email,age from student where name like "%" #{name} "%"
+    </select>
+
+    <resultMap id="StuAndDept" type="com.yat.entity.Student">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="email" property="email"/>
+        <result column="age" property="age"/>
+        <result column="did" property="department.id"/>
+        <result column="deptname" property="department.departmentName"/>
+    </resultMap>
+    <resultMap id="StuAndDept2" type="com.yat.entity.Student">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="email" property="email"/>
+        <result column="age" property="age"/>
+        <association property="department" javaType="com.yat.entity.Department">
+            <id column="did" property="id"/>
+            <result column="deptname" property="departmentName"/>
+        </association>
+    </resultMap>
+    <!--查询结果：name    email   age  dept_name-->
+    <select id="getStuAndDept" resultMap="StuAndDept2">
+        SELECT s.id as id,s.name as name,s.email as email,s.age as age,
+               d.id as did,d.dept_name as deptname
+        FROM student as s INNER JOIN department AS d
+        ON s.d_id=d.id where s.id=#{id}
+    </select>
+
+    <resultMap id="byStep" type="com.yat.entity.Student">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="email" property="email"/>
+        <result column="age" property="age"/>
+        <association property="department"
+                     select="com.yat.dao.DepartmentDao.getDeptById"
+                     column="d_id">
+        </association>
+    </resultMap>
+    <select id="getStuByIdStep" resultMap="byStep">
+        SELECT * FROM student where id=#{id}
+    </select>
+
+    <select id="getStuByDeptId" resultType="com.yat.entity.Student">
+        select * from student where d_id=#{id}
     </select>
 </mapper>

@@ -14,7 +14,7 @@ public interface StudentDao {
 
     List<Student> selectMulitParam(@Param("name")String name, @Param("age")int age);
 
-    int insertStudent(Student student);
+    boolean insertStudent(Student student);
 
     List<Student> selectStudentByMap(Map<String,Object> map);
 
@@ -27,4 +27,10 @@ public interface StudentDao {
 
     // 第二种模糊查询
     List<Student> selectLikeTwo(String name);
+
+    List<Student> getStuAndDept(Integer id);
+
+    Student getStuByIdStep(Integer id);
+
+    List<Student> getStuByDeptId(Integer id);
 }

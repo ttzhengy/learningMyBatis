@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yat.dao.StudentDaoDynamic">
+
+    <!--查询员工，在待查询属性上带有待查询字段的值-->
+    <select id="getStuByConditionIf" resultType="com.yat.entity.Student">
+       select * from student
+           <where>
+               <if test="id!=null and id!=1003">
+                   id=#{id} and
+               </if>
+               <if test="name!=null and name!=&quot;&quot;">
+                   name like #{name}
+               </if>
+           </where>
+    </select>
+
+    <select id="getStuByConditionTrim" resultType="com.yat.entity.Student">
+        select * from student
+        <trim prefix="where">
+            <if test="id!=null and id!=1003">
+                id=#{id} and
+            </if>
+            <if test="name!=null and name!=&quot;&quot;">
+                name like #{name}
+            </if>
+        </trim>
+    </select>
+
+    <select id="getStuByConditionChoose" resultType="com.yat.entity.Student">
+        select * from student
+        <where>
+            <choose>
+                <when test="id!=null">
+                    id=#{id}
+                </when>
+                <when test="name!=null">
+                    name like #{name}
+                </when>
+                <otherwise>
+                    1=1
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <update id="updateStu">
+        update student
+        <set>
+            <if test="name!=null">
+                name=#{name}
+            </if>
+            <if test="email!=null">
+                email=#{email}
+            </if>
+            <if test="age!=null">
+                age=#{age}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="getStuByConditionForeach" resultType="com.yat.entity.Student">
+        select * from student where id in
+        <foreach collection="list" item="stu_id" separator="," open="(" close=")">
+            #{stu_id}
+        </foreach>
+    </select>
+
+    <!--批量插入-->
+    <insert id="addStus">
+        insert into student(name, email, age, d_id)
+         values
+        <foreach collection="stus" item="stu" separator=",">
+            (#{stu.name},#{stu.email},#{stu.age},#{stu.department.id})
+        </foreach>
+    </insert>
+</mapper>

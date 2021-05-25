@@ -27,13 +27,13 @@ public class TestMybatis {
         SqlSession sqlSession = MyBatisUtils.getSqlSession();
         StudentDao dao = sqlSession.getMapper(StudentDao.class);
         Student student = new Student();
-        student.setId(1006);
-        student.setName("赵云");
-        student.setEmail("赵云@qq.com");
-        student.setAge(24);
-        int i = dao.insertStudent(student);
-        sqlSession.commit();
+        student.setName("马超");
+        student.setEmail("machao@hotmail.com");
+        student.setAge(27);
+        boolean i = dao.insertStudent(student);
+        System.out.println(student.getId());
         System.out.println(i);
+        sqlSession.commit();
     }
 
     @Test
@@ -107,5 +107,37 @@ public class TestMybatis {
         for (Student stu : studentList) {
             System.out.println(stu);
         }
+    }
+
+    @Test
+    public void testGetStuAndDept(){
+        SqlSession sqlSession = MyBatisUtils.getSqlSession();
+        StudentDao dao = sqlSession.getMapper(StudentDao.class);
+        List<Student> studentList = dao.getStuAndDept(1002);
+        for (Student stu : studentList) {
+            System.out.println(stu);
+        }
+    }
+
+    @Test
+    public void testGetStuByIdStep(){
+        SqlSession sqlSession = MyBatisUtils.getSqlSession();
+        StudentDao dao = sqlSession.getMapper(StudentDao.class);
+        Student stu = dao.getStuByIdStep(1003);
+        // System.out.println(stu);
+        System.out.println(stu.getAge());
+    }
+
+    @Test
+    public void testSecondLevelCache(){
+        SqlSession sqlSession = MyBatisUtils.getSqlSession();
+        SqlSession sqlSession2 = MyBatisUtils.getSqlSession();
+        StudentDao dao = sqlSession.getMapper(StudentDao.class);
+        StudentDao dao2 = sqlSession2.getMapper(StudentDao.class);
+        Student stu = dao.getStuByIdStep(1003);
+        System.out.println(stu);
+        sqlSession.close();
+        Student stu2 = dao2.getStuByIdStep(1003);
+        System.out.println(stu2);
     }
 }
